@@ -53,8 +53,13 @@ class UserController {
     }
 
     const { email, oldPassword } = req.body;
-
     const user = await User.findByPk(req.userId);
+
+    if (user.provider === false) {
+      return res
+        .status(401)
+        .json({ error: 'You can only create appointments with providers' });
+    }
 
     if (email && email !== user.email) {
       const userExists = await User.findOne({ where: { email } });
